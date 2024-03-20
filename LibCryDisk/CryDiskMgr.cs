@@ -15,10 +15,10 @@ namespace LibCryDisk
             return CryDisk.IsDiskMounted(EncPath);
         }
 
-        public static CryDisk NewCryDisk(int size, string encPath, char driveLetter, SecureString password)
+        public static CryDisk NewCryDisk(int size, string encPath, char driveLetter, SecureString password, string DriveLabel, LibVDisk.VDisk.FileSystem fs)
         {
             string tempPath = System.IO.Path.GetTempFileName() + ".vhdx";
-            LibVDisk.VDisk.CreateVDisk(tempPath, size, "CryDisk");
+            LibVDisk.VDisk.CreateVDisk(tempPath, size, DriveLabel, fs);
             CryDisk cd = new CryDisk(tempPath, encPath, driveLetter);
             cd.LoadPassword(password);
             cd.Encrypt();

@@ -4,18 +4,38 @@ namespace LibVDisk
 {
     public static class VDisk
     {
-        public static string CreateVDisk(string path, int sizeMb, string label="New VDisk")
+        public struct DiskPartResult
+        {
+            public bool success;
+            public int exitCode;
+            public string stdOut;
+        }
+
+        public enum FileSystem
+        {
+            FAT32,
+            NTFS
+        }
+
+        static Dictionary<FileSystem, string> DPFSNames = new Dictionary<FileSystem, string>()
+        {
+            {FileSystem.FAT32, "FAT32" },
+            {FileSystem.NTFS, "NTFS" }
+        };
+
+        public static DiskPartResult CreateVDisk(string path, int sizeMb, string label="New VDisk", FileSystem fs = FileSystem.NTFS)
         {
             string dpscript = "create vdisk file=\"" + path + "\" maximum=" + sizeMb + " type=expandable" + Environment.NewLine;
             dpscript += "select vdisk file=\"" + path + "\"" + Environment.NewLine;
             dpscript += "attach vdisk" + Environment.NewLine;
             dpscript += "create partition primary" + Environment.NewLine;
-            dpscript += "format fs=ntfs label=\"" + label + "\" quick" + Environment.NewLine;
+            dpscript += "format fs=" + DPFSNames[fs] + " label=\"" + label + "\" quick" + Environment.NewLine;
             dpscript += "detach vdisk" + Environment.NewLine;
-            return EvalDiskpartScript(dpscript);
+            DiskPartResult res = EvalDiskpartScript(dpscript);
+            return res;
         }
 
-        public static string MountVDisk(string path, char letter)
+        public static DiskPartResult MountVDisk(string path, char letter)
         {
             string dpscript = "select vdisk file=\"" + path + "\"" + Environment.NewLine;
             dpscript += "attach vdisk" + Environment.NewLine;
@@ -24,14 +44,14 @@ namespace LibVDisk
             return EvalDiskpartScript(dpscript);
         }
 
-        public static string UnmountVDisk(string path)
+        public static DiskPartResult UnmountVDisk(string path)
         {
             string dpscript = "select vdisk file=\"" + path + "\"" + Environment.NewLine;
             dpscript += "detach vdisk" + Environment.NewLine;
             return EvalDiskpartScript(dpscript);
         }
 
-        static string EvalDiskpartScript(string script)
+        static DiskPartResult EvalDiskpartScript(string script)
         {
             string ts = Path.GetTempFileName();
             File.WriteAllText(ts, script);
@@ -45,9 +65,12 @@ namespace LibVDisk
             
             File.Delete(ts);
 
-            string rc = p.ExitCode.ToString() + Environment.NewLine + p.StandardOutput.ReadToEnd();
+            DiskPartResult res = new DiskPartResult();
+            res.success = p.ExitCode == 0;
+            res.exitCode = p.ExitCode;
+            res.stdOut = p.StandardOutput.ReadToEnd();
 
-            return rc;
+            return res;
         }
 
         public static List<char> GetFreeDriveLetters()

@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿//#define TRY_CATCH
+
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Cryptography;
@@ -74,14 +76,29 @@ namespace LibCryDisk
             return Path.GetTempPath() + Util.sha256_hash(fi.Name) + ".vhdx";
         }
 
+        public static void SetVDAttribs(string path)
+        {
+            FileAttributes attributes = File.GetAttributes(path);
+            attributes &= ~FileAttributes.Compressed;
+            attributes &= ~FileAttributes.SparseFile;
+            attributes &= ~FileAttributes.ReadOnly;
+            attributes &= ~FileAttributes.Encrypted;
+            File.SetAttributes(path, attributes);
+        }
+
         public bool Mount()
         {
             try
             {
                 Decrypt();
-                LibVDisk.VDisk.MountVDisk(TempPlainPath, DriveLetter);
+                var rs = LibVDisk.VDisk.MountVDisk(TempPlainPath, DriveLetter);
+                if (!rs.success)
+                {
+                    throw new Exception("VDisk failed to mount: " + rs.stdOut);
+                }
                 return true;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return false;
             }
@@ -89,11 +106,17 @@ namespace LibCryDisk
 
         public bool Unmount()
         {
-            try {
-                LibVDisk.VDisk.UnmountVDisk(TempPlainPath);
+            try
+            {
+                var rs = LibVDisk.VDisk.UnmountVDisk(TempPlainPath);
+                if (!rs.success)
+                {
+                    throw new Exception("VDisk failed to mount: " + rs.stdOut);
+                }
                 Encrypt();
                 return true;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 return false;
             }

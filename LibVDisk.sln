@@ -5,11 +5,9 @@ VisualStudioVersion = 17.9.34321.82
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibVDisk", "LibVDisk\LibVDisk.csproj", "{ECB49D54-3CB6-4B35-91DC-D84D77285C55}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibVDiskUi", "LibVDiskUi\LibVDiskUi.csproj", "{11DA8577-BBFF-41D3-853F-E7DCEBD660E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibCryDisk", "LibCryDisk\LibCryDisk.csproj", "{437AE89F-BC04-46B9-90F3-935DBB56696F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibCryDisk", "LibCryDisk\LibCryDisk.csproj", "{437AE89F-BC04-46B9-90F3-935DBB56696F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryDiskUi", "CryDiskUi\CryDiskUi.csproj", "{767F06E2-01A9-474F-B6ED-4B0CBD1E05BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CryDiskUi", "CryDiskUi\CryDiskUi.csproj", "{767F06E2-01A9-474F-B6ED-4B0CBD1E05BE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,10 +19,6 @@ Global
 		{ECB49D54-3CB6-4B35-91DC-D84D77285C55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECB49D54-3CB6-4B35-91DC-D84D77285C55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECB49D54-3CB6-4B35-91DC-D84D77285C55}.Release|Any CPU.Build.0 = Release|Any CPU
-		{11DA8577-BBFF-41D3-853F-E7DCEBD660E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{11DA8577-BBFF-41D3-853F-E7DCEBD660E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{11DA8577-BBFF-41D3-853F-E7DCEBD660E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{11DA8577-BBFF-41D3-853F-E7DCEBD660E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{437AE89F-BC04-46B9-90F3-935DBB56696F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{437AE89F-BC04-46B9-90F3-935DBB56696F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{437AE89F-BC04-46B9-90F3-935DBB56696F}.Release|Any CPU.ActiveCfg = Release|Any CPU

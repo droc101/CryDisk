@@ -29,6 +29,7 @@ namespace CryDiskUi
                 flowLayoutPanel1.Controls.Add(cde);
             }
             flowLayoutPanel1_Resize(null, null);
+            Refresh();
             if (flowLayoutPanel1.Controls.Count != 1)
             {
                 toolStripLabel1.Text = flowLayoutPanel1.Controls.Count + " CryDisks";
@@ -82,6 +83,11 @@ namespace CryDiskUi
                     e.Cancel = true;
                 }
             }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            ReloadList();
         }
     }
 }

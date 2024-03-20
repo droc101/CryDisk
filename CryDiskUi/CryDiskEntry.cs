@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -22,6 +23,7 @@ namespace CryDiskUi
         public bool locked = true;
         bool hasDisk = false;
         string tempStatus;
+        string mountPath;
         CryDisk disk;
 
         public CryDiskEntry(string FilePath)
@@ -36,11 +38,28 @@ namespace CryDiskUi
 
         void UpdateState()
         {
+            if (locked)
+            {
+                pictureBox1.Image = Properties.Resources.lockedp;
+            } else
+            {
+                if (hasDisk)
+                {
+                    pictureBox1.Image = Properties.Resources.unlockp;
+                } else
+                {
+                    pictureBox1.Image = Properties.Resources.unlock_errp;
+                }
+            }
             label2.Text = locked ? "Locked" : "Unlocked";
             button1.Text = locked ? "Unlock" : "Lock";
             if (!hasDisk && !locked)
             {
                 label2.Text += " (Needs Password to Lock)";
+            }
+            if (mountPath != null)
+            {
+                label2.Text += Environment.NewLine + mountPath;
             }
             button2.Enabled = locked;
             if (tempStatus != null)
@@ -65,6 +84,12 @@ namespace CryDiskUi
                     {
                         hasDisk = true;
                         locked = false;
+                        mountPath = ud.GetDriveLetter() + ":\\";
+                        ProcessStartInfo psi = new ProcessStartInfo();
+                        psi.UseShellExecute = false;
+                        psi.FileName = "explorer";
+                        psi.Arguments = mountPath;
+                        Process.Start(psi);
                     }
                     else
                     {
@@ -100,6 +125,7 @@ namespace CryDiskUi
                     disk = null;
                     locked = true;
                     hasDisk = false;
+                    mountPath = null;
                     
                 } else
                 {
