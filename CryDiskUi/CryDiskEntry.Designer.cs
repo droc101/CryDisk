@@ -39,7 +39,7 @@
             // pictureBox1
             // 
             pictureBox1.Location = new Point(9, 8);
-            pictureBox1.Margin = new Padding(2, 2, 2, 2);
+            pictureBox1.Margin = new Padding(2);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(56, 56);
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
@@ -70,10 +70,10 @@
             // button1
             // 
             button1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button1.Location = new Point(481, 12);
-            button1.Margin = new Padding(2, 2, 2, 2);
+            button1.Location = new Point(454, 12);
+            button1.Margin = new Padding(2);
             button1.Name = "button1";
-            button1.Size = new Size(76, 24);
+            button1.Size = new Size(103, 24);
             button1.TabIndex = 3;
             button1.Text = "Lock";
             button1.UseVisualStyleBackColor = true;
@@ -82,10 +82,10 @@
             // button2
             // 
             button2.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            button2.Location = new Point(481, 40);
-            button2.Margin = new Padding(2, 2, 2, 2);
+            button2.Location = new Point(454, 40);
+            button2.Margin = new Padding(2);
             button2.Name = "button2";
-            button2.Size = new Size(76, 24);
+            button2.Size = new Size(103, 24);
             button2.TabIndex = 4;
             button2.Text = "Delete";
             button2.UseVisualStyleBackColor = true;
@@ -100,7 +100,7 @@
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(pictureBox1);
-            Margin = new Padding(2, 2, 2, 2);
+            Margin = new Padding(2);
             Name = "CryDiskEntry";
             Size = new Size(566, 72);
             Load += CryDiskEntry_Load;

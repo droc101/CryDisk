@@ -110,6 +110,7 @@
             Controls.Add(toolStrip1);
             Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(2);
+            MinimumSize = new Size(400, 200);
             Name = "Form1";
             Text = "CryDisk Manager";
             FormClosing += Form1_FormClosing;

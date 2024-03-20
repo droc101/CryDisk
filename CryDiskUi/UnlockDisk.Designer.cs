@@ -118,6 +118,8 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "UnlockDisk";
+            ShowIcon = false;
+            ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "Unlock CryDisk";
             ResumeLayout(false);

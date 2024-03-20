@@ -8,6 +8,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationIcon>imageres_1031.ico</ApplicationIcon>
+    <AssemblyName>CryDisk Manager</AssemblyName>
+    <UseWPF>False</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>

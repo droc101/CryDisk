@@ -56,7 +56,6 @@ namespace LibVDisk
             string ts = Path.GetTempFileName();
             File.WriteAllText(ts, script);
             ProcessStartInfo psi = new ProcessStartInfo("diskpart", "/s " + ts);
-            //ProcessStartInfo psi = new ProcessStartInfo("notepad", ts);
             psi.UseShellExecute = false;
             psi.CreateNoWindow = true;
             psi.RedirectStandardOutput = true;

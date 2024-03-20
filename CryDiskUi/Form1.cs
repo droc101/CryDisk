@@ -56,7 +56,7 @@ namespace CryDiskUi
             {
                 if (c is CryDiskEntry)
                 {
-                    ((CryDiskEntry)c).Width = flowLayoutPanel1.Width - 40;
+                    ((CryDiskEntry)c).Width = flowLayoutPanel1.Width - 24;
                 }
             }
         }

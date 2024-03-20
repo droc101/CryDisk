@@ -52,7 +52,7 @@ namespace CryDiskUi
                 }
             }
             label2.Text = locked ? "Locked" : "Unlocked";
-            button1.Text = locked ? "Unlock" : "Lock";
+            button1.Text = locked ? "Unlock && Open" : "Lock";
             if (!hasDisk && !locked)
             {
                 label2.Text += " (Needs Password to Lock)";
