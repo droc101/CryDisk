@@ -19,12 +19,12 @@ namespace CryDiskUi
             InitializeComponent();
         }
 
-        string DiskPath;
+        string? DiskPath;
         public bool locked = true;
         bool hasDisk = false;
-        string tempStatus;
-        string mountPath;
-        CryDisk disk;
+        string? tempStatus;
+        string? mountPath;
+        CryDisk? disk;
 
         public CryDiskEntry(string FilePath)
         {
@@ -79,7 +79,9 @@ namespace CryDiskUi
                     tempStatus = "Unlocking...";
                     UpdateState();
                     FindForm().Cursor = Cursors.WaitCursor;
+#pragma warning disable CS8604 // Possible null reference argument.
                     disk = CryDiskMgr.LoadCryDisk(DiskPath, ud.GetDriveLetter(), LibCryDisk.Util.ConvertToSecureString(ud.GetPassword()));
+#pragma warning restore CS8604 // Possible null reference argument.
                     if (disk.Mount())
                     {
                         hasDisk = true;
@@ -108,7 +110,9 @@ namespace CryDiskUi
                     ud.HideDriveSelector();
                     if (ud.ShowDialog() == DialogResult.OK)
                     {
+#pragma warning disable CS8604 // Possible null reference argument.
                         disk = CryDiskMgr.LoadCryDisk(DiskPath, ud.GetDriveLetter(), LibCryDisk.Util.ConvertToSecureString(ud.GetPassword()));
+#pragma warning restore CS8604 // Possible null reference argument.
                         hasDisk = true;
                         UpdateState();
                     }
@@ -141,7 +145,9 @@ namespace CryDiskUi
         {
             if (MessageBox.Show("Are you sure you want to delete this CryDisk? This action cannot be undone.", "Confirm", MessageBoxButtons.YesNo) == DialogResult.Yes)
             {
+#pragma warning disable CS8604 // Possible null reference argument.
                 File.Delete(DiskPath);
+#pragma warning restore CS8604 // Possible null reference argument.
                 Parent.Controls.Remove(this);
             }
         }

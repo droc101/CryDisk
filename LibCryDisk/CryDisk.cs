@@ -8,6 +8,9 @@ using System.Text;
 
 namespace LibCryDisk
 {
+    /// <summary>
+    /// CryDisk instance
+    /// </summary>
     public class CryDisk
     {
         /// <summary>
@@ -25,12 +28,27 @@ namespace LibCryDisk
         /// </summary>
         public char DriveLetter { get; set; }
 
-
+        /// <summary>
+        /// Salt/IV for encryption. If you use this lib, CHANGE IT.
+        /// </summary>
         public static string Salt = "TempCryDiskSaltValue";
 
-        byte[] SecurePassword;
-        byte[] SecureIV;
+        /// <summary>
+        /// Raw password key
+        /// TODO: Protect them
+        /// </summary>
+        byte[]? SecurePassword;
+        /// <summary>
+        /// Raw password iv key
+        /// TODO: Protect them
+        /// </summary>
+        byte[]? SecureIV;
 
+        /// <summary>
+        /// Creates a CryDisk object from an existing encrypted disk.
+        /// </summary>
+        /// <param name="encryptedPath">The path of the encrypted disk image</param>
+        /// <param name="driveLetter">Drive letter to use when mounting</param>
         public CryDisk(string encryptedPath, char driveLetter)
         {
             EncryptedPath = encryptedPath;
@@ -38,6 +56,12 @@ namespace LibCryDisk
             DriveLetter = driveLetter;
         }
 
+        /// <summary>
+        /// Create a CryDisk object from an existing VHDX. The existing file will be DESTROYED.
+        /// </summary>
+        /// <param name="rawPlainPath">Existing plaintext VHDX file</param>
+        /// <param name="encryptedPath">The path to store the encrypted disk image</param>
+        /// <param name="driveLetter">Drive letter to use when mounting</param>
         public CryDisk(string rawPlainPath, string encryptedPath, char driveLetter)
         {
             EncryptedPath = encryptedPath;
@@ -48,7 +72,11 @@ namespace LibCryDisk
             
         }
         
-
+        /// <summary>
+        /// Checks if a CryDisk is unlocked
+        /// </summary>
+        /// <param name="EncPath">The path to the encrypted CryDisk</param>
+        /// <returns>True if unlocked</returns>
         internal static bool IsDiskMounted(string EncPath)
         {
             FileInfo fi = new FileInfo(EncPath);
@@ -56,36 +84,43 @@ namespace LibCryDisk
             return File.Exists(path);
         }
 
+        /// <summary>
+        /// Loads the password for this CryDisk
+        /// </summary>
+        /// <param name="password">The password</param>
         public void LoadPassword(SecureString password)
         {
-            using (Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(Util.SecureStringToString(password), Encoding.UTF8.GetBytes(Salt)))
+            string ps = Util.SecureStringToString(password);
+            byte[] salt = Encoding.UTF8.GetBytes(Salt);
+            using (Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(ps, salt, 32, HashAlgorithmName.SHA512))
             {
                 SecurePassword = key.GetBytes(32);
                 SecureIV = key.GetBytes(16);
             }
         }
 
+        /// <summary>
+        /// Clear the password from this disk
+        /// </summary>
         public void DestroyPassword()
         {
             SecurePassword = null; SecureIV = null;
         }
 
+        /// <summary>
+        /// Gets the temp file used for the unlocked vhdx
+        /// </summary>
+        /// <returns>The path</returns>
         string GetTempPlainPath()
         {
             FileInfo fi = new FileInfo(EncryptedPath);
             return Path.GetTempPath() + Util.sha256_hash(fi.Name) + ".vhdx";
         }
 
-        public static void SetVDAttribs(string path)
-        {
-            FileAttributes attributes = File.GetAttributes(path);
-            attributes &= ~FileAttributes.Compressed;
-            attributes &= ~FileAttributes.SparseFile;
-            attributes &= ~FileAttributes.ReadOnly;
-            attributes &= ~FileAttributes.Encrypted;
-            File.SetAttributes(path, attributes);
-        }
-
+        /// <summary>
+        /// Unlocks and mounts the CryDisk
+        /// </summary>
+        /// <returns>True if success, otherwise false</returns>
         public bool Mount()
         {
             try
@@ -98,12 +133,16 @@ namespace LibCryDisk
                 }
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
         }
 
+        /// <summary>
+        /// Unmount and lock the CryDisk
+        /// </summary>
+        /// <returns>True if success, otherwise false</returns>
         public bool Unmount()
         {
             try
@@ -116,15 +155,21 @@ namespace LibCryDisk
                 Encrypt();
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
         }
 
+        /// <summary>
+        /// Locks the CryDisk (does NOT unmount)
+        /// </summary>
         public void Encrypt()
         {
-            using (AesManaged aesAlg = new AesManaged())
+            if (SecurePassword == null || SecureIV == null)
+                throw new ArgumentNullException("You must LoadPassword before locking or unlocking");
+
+            using (Aes aesAlg = Aes.Create())
             {
                 // Set the encryption key and initialization vector (IV) from the password
                 byte[] key = SecurePassword;
@@ -147,16 +192,18 @@ namespace LibCryDisk
             File.Delete(TempPlainPath); // get rid of the temporary plain file
         }
 
+        /// <summary>
+        /// Unlocks the CryDisk (does NOT mount)
+        /// </summary>
         void Decrypt()
         {
-            using (AesManaged aesAlg = new AesManaged())
+            using (Aes aesAlg = Aes.Create())
             {
-                // Set the encryption key and initialization vector (IV) from the password
-                byte[] key = SecurePassword;
-                byte[] iv = SecureIV;
 
                 // Create a decryptor to perform the stream transform
-                ICryptoTransform decryptor = aesAlg.CreateDecryptor(key, iv);
+#pragma warning disable CS8604 // Possible null reference argument.
+                ICryptoTransform decryptor = aesAlg.CreateDecryptor(SecurePassword, SecureIV);
+#pragma warning restore CS8604 // Possible null reference argument.
 
                 using (FileStream inputFileStream = new FileStream(EncryptedPath, FileMode.Open))
                 using (FileStream outputFileStream = new FileStream(TempPlainPath, FileMode.Create))
