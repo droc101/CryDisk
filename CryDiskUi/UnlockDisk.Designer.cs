@@ -121,7 +121,7 @@
             ShowIcon = false;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
-            Text = "Unlock CryDisk";
+            Text = "CryDisk Password";
             ResumeLayout(false);
             PerformLayout();
         }
