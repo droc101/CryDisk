@@ -139,6 +139,8 @@ namespace LibVDisk
         {
             string letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             List<char> used = new List<char>();
+            used.Add('A'); // don't allow floppy drive letters
+            used.Add('B');
             foreach (var drive in DriveInfo.GetDrives())
             {
                 used.Add(drive.Name[0]);
