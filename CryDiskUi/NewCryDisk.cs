@@ -70,5 +70,16 @@ namespace CryDiskUi
                 return;
             size.Value = val;
         }
+
+        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboBox1.SelectedIndex == 0)
+            { // FAT32
+                driveLabel.MaxLength = 11;
+            } else if (comboBox1.SelectedIndex == 1)
+            { // NTFS
+                driveLabel.MaxLength = 32;
+            }
+        }
     }
 }

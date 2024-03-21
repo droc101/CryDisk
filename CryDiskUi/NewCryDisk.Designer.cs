@@ -198,6 +198,7 @@
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(361, 23);
             comboBox1.TabIndex = 16;
+            comboBox1.SelectedIndexChanged += comboBox1_SelectedIndexChanged;
             // 
             // groupBox1
             // 
