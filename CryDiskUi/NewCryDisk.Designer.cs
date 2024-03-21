@@ -43,10 +43,12 @@
             label4 = new Label();
             comboBox1 = new ComboBox();
             groupBox1 = new GroupBox();
+            numericUpDown1 = new NumericUpDown();
             groupBox2 = new GroupBox();
             label6 = new Label();
             ((System.ComponentModel.ISupportInitialize)size).BeginInit();
             groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
@@ -97,12 +99,12 @@
             // sizeLabel
             // 
             sizeLabel.AutoSize = true;
-            sizeLabel.Location = new Point(6, 154);
+            sizeLabel.Location = new Point(81, 157);
             sizeLabel.Margin = new Padding(2, 0, 2, 0);
             sizeLabel.Name = "sizeLabel";
-            sizeLabel.Size = new Size(52, 15);
+            sizeLabel.Size = new Size(25, 15);
             sizeLabel.TabIndex = 6;
-            sizeLabel.Text = "8192 MB";
+            sizeLabel.Text = "MB";
             // 
             // label5
             // 
@@ -200,6 +202,7 @@
             // groupBox1
             // 
             groupBox1.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+            groupBox1.Controls.Add(numericUpDown1);
             groupBox1.Controls.Add(sizeLabel);
             groupBox1.Controls.Add(label2);
             groupBox1.Controls.Add(comboBox1);
@@ -209,11 +212,24 @@
             groupBox1.Controls.Add(size);
             groupBox1.Location = new Point(12, 189);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(373, 184);
+            groupBox1.Size = new Size(373, 189);
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Disk Settings";
             groupBox1.Enter += groupBox1_Enter;
+            // 
+            // numericUpDown1
+            // 
+            numericUpDown1.Location = new Point(6, 155);
+            numericUpDown1.Maximum = new decimal(new int[] { 131072, 0, 0, 0 });
+            numericUpDown1.Minimum = new decimal(new int[] { 64, 0, 0, 0 });
+            numericUpDown1.Name = "numericUpDown1";
+            numericUpDown1.Size = new Size(75, 23);
+            numericUpDown1.TabIndex = 17;
+            numericUpDown1.TextAlign = HorizontalAlignment.Right;
+            numericUpDown1.UpDownAlign = LeftRightAlignment.Left;
+            numericUpDown1.Value = new decimal(new int[] { 64, 0, 0, 0 });
+            numericUpDown1.ValueChanged += numericUpDown1_ValueChanged;
             // 
             // groupBox2
             // 
@@ -263,6 +279,7 @@
             ((System.ComponentModel.ISupportInitialize)size).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             ResumeLayout(false);
@@ -287,5 +304,6 @@
         private GroupBox groupBox1;
         private GroupBox groupBox2;
         private Label label6;
+        private NumericUpDown numericUpDown1;
     }
 }

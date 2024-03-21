@@ -1,14 +1,5 @@
 ﻿using LibCryDisk;
 using LibVDisk;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace CryDiskUi
 {
@@ -25,28 +16,37 @@ namespace CryDiskUi
         {
             if (filename.Text == "")
             {
-                MessageBox.Show("You must enter a filename.");
+                MessageBox.Show("You must enter a filename.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (pw1.Text == "")
             {
-                MessageBox.Show("You must enter a password.");
+                MessageBox.Show("You must enter a password.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             if (pw1.Text != pw2.Text)
             {
-                MessageBox.Show("Passwords must match");
+                MessageBox.Show("Passwords must match", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            string p = Form1.CryDiskStoragePath + "\\" + filename.Text + ".cyd";
+
+            if (File.Exists(p))
+            {
+                MessageBox.Show("File already exists.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
             Cursor = Cursors.WaitCursor;
-            CryDisk cd = CryDiskMgr.NewCryDisk((int)size.Value * 1024, Form1.CryDiskStoragePath + "\\" + filename.Text + ".cyd", 'Z', Util.ConvertToSecureString(pw1.Text), driveLabel.Text, (VDisk.FileSystem)comboBox1.SelectedIndex);
+            CryDiskMgr.NewCryDisk((int)numericUpDown1.Value, p, 'Z', Util.ConvertToSecureString(pw1.Text), driveLabel.Text, (VDisk.FileSystem)comboBox1.SelectedIndex);
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void size_ValueChanged(object sender, EventArgs e)
+        private void size_ValueChanged(object? sender, EventArgs? e)
         {
-            sizeLabel.Text = size.Value + " GB";
+            numericUpDown1.Value = size.Value * 1024;
         }
 
         private void NewCryDisk_Load(object sender, EventArgs e)
@@ -57,6 +57,18 @@ namespace CryDiskUi
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            int val = (int)numericUpDown1.Value / 1024;
+            if (val < 1)
+                val = 1;
+            if (val > 32)
+                val = 32;
+            if (val == size.Value)
+                return;
+            size.Value = val;
         }
     }
 }

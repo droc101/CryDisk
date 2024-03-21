@@ -1,8 +1,4 @@
-﻿//#define TRY_CATCH
-
-using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
+﻿using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -67,11 +63,11 @@ namespace LibCryDisk
             EncryptedPath = encryptedPath;
             TempPlainPath = GetTempPlainPath();
             File.Move(rawPlainPath, TempPlainPath); // Move the file to the temporary path (to be encrypted later)
-            
+
             DriveLetter = driveLetter;
-            
+
         }
-        
+
         /// <summary>
         /// Checks if a CryDisk is unlocked
         /// </summary>
@@ -105,6 +101,7 @@ namespace LibCryDisk
         public void DestroyPassword()
         {
             SecurePassword = null; SecureIV = null;
+            GC.Collect(); // scrub the memory
         }
 
         /// <summary>
@@ -133,8 +130,9 @@ namespace LibCryDisk
                 }
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine("Failed to mount CryDisk: " + e.Message);
                 return false;
             }
         }
@@ -150,13 +148,17 @@ namespace LibCryDisk
                 var rs = LibVDisk.VDisk.UnmountVDisk(TempPlainPath);
                 if (!rs.success)
                 {
-                    throw new Exception("VDisk failed to mount: " + rs.stdOut);
+                    if (!rs.stdOut.Contains("The virtual disk is already detached.")) // user may have ejected the vdisk
+                    {
+                        throw new Exception("VDisk failed to mount: " + rs.stdOut);
+                    }
                 }
                 Encrypt();
                 return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine("Failed to unmount CryDisk: " + e.Message);
                 return false;
             }
         }
@@ -197,6 +199,9 @@ namespace LibCryDisk
         /// </summary>
         void Decrypt()
         {
+            if (SecurePassword == null || SecureIV == null)
+                throw new ArgumentNullException("You must LoadPassword before locking or unlocking");
+
             using (Aes aesAlg = Aes.Create())
             {
 

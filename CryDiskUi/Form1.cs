@@ -1,7 +1,3 @@
-using LibCryDisk;
-using System.Security;
-using System.IO;
-
 namespace CryDiskUi
 {
     public partial class Form1 : Form
@@ -23,22 +19,27 @@ namespace CryDiskUi
         void ReloadList()
         {
             flowLayoutPanel1.Controls.Clear();
+            int dc = 0;
             foreach (var file in Directory.GetFiles(CryDiskStoragePath))
             {
+                if (Path.GetExtension(file) != ".cyd")
+                {
+                    continue;
+                }
                 CryDiskEntry cde = new CryDiskEntry(file);
                 flowLayoutPanel1.Controls.Add(cde);
+                dc++;
             }
-            flowLayoutPanel1_Resize(null, null);
-            Refresh();
-            if (flowLayoutPanel1.Controls.Count != 1)
+            if (dc != 1)
             {
-                toolStripLabel1.Text = flowLayoutPanel1.Controls.Count + " CryDisks";
+                toolStripLabel1.Text = dc.ToString() + " CryDisks";
             }
             else
             {
-                toolStripLabel1.Text = flowLayoutPanel1.Controls.Count + " CryDisk";
+                toolStripLabel1.Text = dc.ToString() + " CryDisk";
             }
-
+            flowLayoutPanel1_Resize(null, null);
+            Refresh();
         }
 
         private void toolStripButton3_Click(object sender, EventArgs e)
@@ -50,7 +51,7 @@ namespace CryDiskUi
             }
         }
 
-        private void flowLayoutPanel1_Resize(object sender, EventArgs e)
+        private void flowLayoutPanel1_Resize(object? sender, EventArgs? e)
         {
             foreach (var c in flowLayoutPanel1.Controls)
             {
@@ -77,7 +78,7 @@ namespace CryDiskUi
             }
             if (!areAllLocked)
             {
-                var r = MessageBox.Show("Not all CryDisks are locked. Are you sure you want to exit?", "Confirm", MessageBoxButtons.YesNo);
+                var r = MessageBox.Show("Not all CryDisks are locked. Are you sure you want to exit?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (r == DialogResult.No)
                 {
                     e.Cancel = true;
@@ -88,6 +89,11 @@ namespace CryDiskUi
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             ReloadList();
+        }
+
+        private void flowLayoutPanel1_SizeChanged(object sender, EventArgs e)
+        {
+            flowLayoutPanel1_Resize(null, null);
         }
     }
 }

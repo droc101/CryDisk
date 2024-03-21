@@ -88,6 +88,9 @@ namespace LibVDisk
         /// <summary>
         /// Unmount a VHDX file
         /// </summary>
+        /// <remarks>
+        /// If the user ejected the VDisk by themselves, this may fail.
+        /// </remarks>
         /// <param name="path">The VHDX file</param>
         /// <returns>Results from DiskPart</returns>
         public static DiskPartResult UnmountVDisk(string path)

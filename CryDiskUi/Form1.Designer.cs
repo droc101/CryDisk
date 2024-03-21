@@ -52,10 +52,13 @@
             toolStrip1.GripStyle = ToolStripGripStyle.Hidden;
             toolStrip1.ImageScalingSize = new Size(28, 28);
             toolStrip1.Items.AddRange(new ToolStripItem[] { toolStripButton3, toolStripLabel1, toolStripButton1 });
+            toolStrip1.LayoutStyle = ToolStripLayoutStyle.HorizontalStackWithOverflow;
             toolStrip1.Location = new Point(0, 0);
-            toolStrip1.MinimumSize = new Size(0, 24);
+            toolStrip1.MinimumSize = new Size(0, 30);
             toolStrip1.Name = "toolStrip1";
-            toolStrip1.Size = new Size(622, 24);
+            toolStrip1.Padding = new Padding(6, 0, 6, 0);
+            toolStrip1.RenderMode = ToolStripRenderMode.System;
+            toolStrip1.Size = new Size(622, 30);
             toolStrip1.TabIndex = 0;
             toolStrip1.Text = "toolStrip1";
             // 
@@ -66,7 +69,7 @@
             toolStripButton3.Image = (Image)resources.GetObject("toolStripButton3.Image");
             toolStripButton3.ImageTransparentColor = Color.Magenta;
             toolStripButton3.Name = "toolStripButton3";
-            toolStripButton3.Size = new Size(35, 21);
+            toolStripButton3.Size = new Size(35, 27);
             toolStripButton3.Text = "New";
             toolStripButton3.Click += toolStripButton3_Click;
             // 
@@ -74,7 +77,7 @@
             // 
             toolStripLabel1.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             toolStripLabel1.Name = "toolStripLabel1";
-            toolStripLabel1.Size = new Size(67, 21);
+            toolStripLabel1.Size = new Size(67, 27);
             toolStripLabel1.Text = "Disk Count";
             // 
             // toolStripButton1
@@ -84,21 +87,23 @@
             toolStripButton1.Image = (Image)resources.GetObject("toolStripButton1.Image");
             toolStripButton1.ImageTransparentColor = Color.Magenta;
             toolStripButton1.Name = "toolStripButton1";
-            toolStripButton1.Size = new Size(50, 21);
+            toolStripButton1.Size = new Size(50, 27);
             toolStripButton1.Text = "Refresh";
             toolStripButton1.Click += toolStripButton1_Click;
             // 
             // flowLayoutPanel1
             // 
             flowLayoutPanel1.AutoScroll = true;
+            flowLayoutPanel1.BackColor = SystemColors.Window;
             flowLayoutPanel1.Dock = DockStyle.Fill;
             flowLayoutPanel1.FlowDirection = FlowDirection.TopDown;
-            flowLayoutPanel1.Location = new Point(0, 24);
+            flowLayoutPanel1.Location = new Point(0, 30);
             flowLayoutPanel1.Margin = new Padding(2);
             flowLayoutPanel1.Name = "flowLayoutPanel1";
-            flowLayoutPanel1.Size = new Size(622, 350);
+            flowLayoutPanel1.Size = new Size(622, 344);
             flowLayoutPanel1.TabIndex = 1;
             flowLayoutPanel1.WrapContents = false;
+            flowLayoutPanel1.SizeChanged += flowLayoutPanel1_SizeChanged;
             flowLayoutPanel1.Resize += flowLayoutPanel1_Resize;
             // 
             // Form1
