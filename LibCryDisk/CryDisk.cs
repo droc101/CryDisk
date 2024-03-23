@@ -30,6 +30,16 @@ namespace LibCryDisk
         public static string Salt = "TempCryDiskSaltValue";
 
         /// <summary>
+        /// The key size to use for AES keys
+        /// </summary>
+        public static int Bits = 256;
+
+        /// <summary>
+        /// The key size to use for AES IVs
+        /// </summary>
+        public static int IvBits = 128;
+
+        /// <summary>
         /// Raw password key
         /// TODO: Protect them
         /// </summary>
@@ -86,12 +96,20 @@ namespace LibCryDisk
         /// <param name="password">The password</param>
         public void LoadPassword(SecureString password)
         {
+            if (Bits % 8 != 0)
+            {
+                throw new InvalidOperationException("The AES bit width must be divisible by 8.");
+            }
+            if (IvBits % 8 != 0)
+            {
+                throw new InvalidOperationException("The AES IV bit width must be divisible by 8.");
+            }
             string ps = Util.SecureStringToString(password);
             byte[] salt = Encoding.UTF8.GetBytes(Salt);
             using (Rfc2898DeriveBytes key = new Rfc2898DeriveBytes(ps, salt, 32, HashAlgorithmName.SHA512))
             {
-                SecurePassword = key.GetBytes(32);
-                SecureIV = key.GetBytes(16);
+                SecurePassword = key.GetBytes(Bits / 8);
+                SecureIV = key.GetBytes(IvBits / 8);
             }
         }
 

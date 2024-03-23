@@ -5,6 +5,40 @@ namespace CryDiskUi
 
         public static string CryDiskStoragePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\CryDisk";
 
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            switch (m.Msg)
+            {
+                case 0x84: //WM_NCHITTEST
+                    var result = (HitTest)m.Result.ToInt32();
+                    if (result == HitTest.Left || result == HitTest.Right)
+                        m.Result = new IntPtr((int)HitTest.Caption);
+                    if (result == HitTest.TopLeft || result == HitTest.TopRight)
+                        m.Result = new IntPtr((int)HitTest.Top);
+                    if (result == HitTest.BottomLeft || result == HitTest.BottomRight)
+                        m.Result = new IntPtr((int)HitTest.Bottom);
+
+                    break;
+            }
+        }
+        enum HitTest
+        {
+            Caption = 2,
+            Transparent = -1,
+            Nowhere = 0,
+            Client = 1,
+            Left = 10,
+            Right = 11,
+            Top = 12,
+            TopLeft = 13,
+            TopRight = 14,
+            Bottom = 15,
+            BottomLeft = 16,
+            BottomRight = 17,
+            Border = 18
+        }
+
         public Form1()
         {
             InitializeComponent();
@@ -19,7 +53,6 @@ namespace CryDiskUi
         void ReloadList()
         {
             flowLayoutPanel1.Controls.Clear();
-            int dc = 0;
             foreach (var file in Directory.GetFiles(CryDiskStoragePath))
             {
                 if (Path.GetExtension(file) != ".cyd")
@@ -28,15 +61,6 @@ namespace CryDiskUi
                 }
                 CryDiskEntry cde = new CryDiskEntry(file);
                 flowLayoutPanel1.Controls.Add(cde);
-                dc++;
-            }
-            if (dc != 1)
-            {
-                toolStripLabel1.Text = dc.ToString() + " CryDisks";
-            }
-            else
-            {
-                toolStripLabel1.Text = dc.ToString() + " CryDisk";
             }
             flowLayoutPanel1_Resize(null, null);
             Refresh();
@@ -86,14 +110,14 @@ namespace CryDiskUi
             }
         }
 
-        private void toolStripButton1_Click(object sender, EventArgs e)
-        {
-            ReloadList();
-        }
-
         private void flowLayoutPanel1_SizeChanged(object sender, EventArgs e)
         {
             flowLayoutPanel1_Resize(null, null);
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            new AboutDialog().ShowDialog();
         }
     }
 }

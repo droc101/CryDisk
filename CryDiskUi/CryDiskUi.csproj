@@ -7,13 +7,14 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <ApplicationIcon>imageres_1031.ico</ApplicationIcon>
+    <ApplicationIcon>CryDiskMgr.ico</ApplicationIcon>
     <AssemblyName>CryDisk Manager</AssemblyName>
     <UseWPF>False</UseWPF>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="imageres_1031.ico" />
+    <Content Include="CryDiskMgr.ico" />
   </ItemGroup>
 
   <ItemGroup>

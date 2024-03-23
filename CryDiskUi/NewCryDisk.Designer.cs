@@ -75,7 +75,7 @@
             // size
             // 
             size.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-            size.LargeChange = 1024;
+            size.LargeChange = 8;
             size.Location = new Point(6, 124);
             size.Margin = new Padding(2);
             size.Maximum = 32;
