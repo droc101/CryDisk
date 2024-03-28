@@ -120,7 +120,6 @@
             Margin = new Padding(2);
             Name = "CryDiskEntry";
             Size = new Size(566, 72);
-            Load += CryDiskEntry_Load;
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             tableLayoutPanel1.ResumeLayout(false);
             ResumeLayout(false);

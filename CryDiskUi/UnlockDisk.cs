@@ -1,22 +1,25 @@
-﻿namespace CryDiskUi
+﻿using LibVDisk;
+
+namespace CryDiskUi
 {
     public partial class UnlockDisk : Form
     {
         public UnlockDisk()
         {
             InitializeComponent();
-            var ltrs = LibVDisk.VDisk.GetFreeDriveLetters();
+            var ltrs = VDisk.GetFreeDriveLetters();
             comboBox1.Items.Clear();
-            foreach (var l in ltrs)
+            foreach (char l in ltrs)
             {
-                comboBox1.Items.Add(l + ":");
+                comboBox1.Items.Add($"{l}:");
             }
             if (comboBox1.Items.Count > 0)
             {
                 comboBox1.SelectedIndex = 0;
-            } else
+            }
+            else
             {
-                MessageBox.Show("No free drive letters available");
+                MessageBox.Show(@"No free drive letters available");
                 DialogResult = DialogResult.Cancel;
                 Close();
             }

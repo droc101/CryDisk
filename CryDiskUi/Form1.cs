@@ -3,41 +3,8 @@ namespace CryDiskUi
     public partial class Form1 : Form
     {
 
-        public static string CryDiskStoragePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\CryDisk";
-
-        protected override void WndProc(ref Message m)
-        {
-            base.WndProc(ref m);
-            switch (m.Msg)
-            {
-                case 0x84: //WM_NCHITTEST
-                    var result = (HitTest)m.Result.ToInt32();
-                    if (result == HitTest.Left || result == HitTest.Right)
-                        m.Result = new IntPtr((int)HitTest.Caption);
-                    if (result == HitTest.TopLeft || result == HitTest.TopRight)
-                        m.Result = new IntPtr((int)HitTest.Top);
-                    if (result == HitTest.BottomLeft || result == HitTest.BottomRight)
-                        m.Result = new IntPtr((int)HitTest.Bottom);
-
-                    break;
-            }
-        }
-        enum HitTest
-        {
-            Caption = 2,
-            Transparent = -1,
-            Nowhere = 0,
-            Client = 1,
-            Left = 10,
-            Right = 11,
-            Top = 12,
-            TopLeft = 13,
-            TopRight = 14,
-            Bottom = 15,
-            BottomLeft = 16,
-            BottomRight = 17,
-            Border = 18
-        }
+        public static readonly string CryDiskStoragePath =
+            Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\CryDisk";
 
         public Form1()
         {
@@ -47,19 +14,46 @@ namespace CryDiskUi
                 Directory.CreateDirectory(CryDiskStoragePath);
             }
             ReloadList();
-
         }
 
-        void ReloadList()
+        protected override void WndProc(ref Message m)
+        {
+            base.WndProc(ref m);
+            switch (m.Msg)
+            {
+                case 0x84: //WM_NCHITTEST
+                    HitTest result = (HitTest)m.Result.ToInt32();
+                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                    switch (result)
+                    {
+                        case HitTest.Left:
+                        case HitTest.Right:
+                            m.Result = new IntPtr((int)HitTest.Caption);
+                            break;
+                        case HitTest.TopLeft:
+                        case HitTest.TopRight:
+                            m.Result = new IntPtr((int)HitTest.Top);
+                            break;
+                        case HitTest.BottomLeft:
+                        case HitTest.BottomRight:
+                            m.Result = new IntPtr((int)HitTest.Bottom);
+                            break;
+                    }
+
+                    break;
+            }
+        }
+
+        private void ReloadList()
         {
             flowLayoutPanel1.Controls.Clear();
-            foreach (var file in Directory.GetFiles(CryDiskStoragePath))
+            foreach (string file in Directory.GetFiles(CryDiskStoragePath))
             {
                 if (Path.GetExtension(file) != ".cyd")
                 {
                     continue;
                 }
-                CryDiskEntry cde = new CryDiskEntry(file);
+                CryDiskEntry cde = new(file);
                 flowLayoutPanel1.Controls.Add(cde);
             }
             flowLayoutPanel1_Resize(null, null);
@@ -68,45 +62,36 @@ namespace CryDiskUi
 
         private void toolStripButton3_Click(object sender, EventArgs e)
         {
-            var nd = new NewCryDisk();
-            if (nd.ShowDialog() == DialogResult.OK)
-            {
-                ReloadList();
-            }
+            NewCryDisk nd = new NewCryDisk();
+            if (nd.ShowDialog() == DialogResult.OK) ReloadList();
         }
 
         private void flowLayoutPanel1_Resize(object? sender, EventArgs? e)
         {
-            foreach (var c in flowLayoutPanel1.Controls)
+            foreach (object? c in flowLayoutPanel1.Controls)
             {
-                if (c is CryDiskEntry)
-                {
-                    ((CryDiskEntry)c).Width = flowLayoutPanel1.Width - 24;
-                }
+                CryDiskEntry entry = c as CryDiskEntry ?? throw new InvalidOperationException();
+                entry.Width = flowLayoutPanel1.Width - 24;
             }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             bool areAllLocked = true;
-            foreach (var c in flowLayoutPanel1.Controls)
+            foreach (object? c in flowLayoutPanel1.Controls)
             {
-                if (c is CryDiskEntry)
-                {
-                    if (!((CryDiskEntry)c).locked)
-                    {
-                        areAllLocked = false;
-                        break;
-                    }
-                }
+                if (c is not CryDiskEntry entry) continue;
+                if (entry.locked) continue;
+                areAllLocked = false;
+                break;
             }
-            if (!areAllLocked)
+
+            if (areAllLocked) return;
+            DialogResult r = MessageBox.Show(@"Not all CryDisks are locked. Are you sure you want to exit?", @"Confirm", MessageBoxButtons.YesNo,
+                MessageBoxIcon.Warning);
+            if (r == DialogResult.No)
             {
-                var r = MessageBox.Show("Not all CryDisks are locked. Are you sure you want to exit?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (r == DialogResult.No)
-                {
-                    e.Cancel = true;
-                }
+                e.Cancel = true;
             }
         }
 
@@ -118,6 +103,19 @@ namespace CryDiskUi
         private void toolStripButton1_Click(object sender, EventArgs e)
         {
             new AboutDialog().ShowDialog();
+        }
+
+        private enum HitTest
+        {
+            Caption = 2,
+            Left = 10,
+            Right = 11,
+            Top = 12,
+            TopLeft = 13,
+            TopRight = 14,
+            Bottom = 15,
+            BottomLeft = 16,
+            BottomRight = 17
         }
     }
 }

@@ -217,7 +217,6 @@
             groupBox1.TabIndex = 17;
             groupBox1.TabStop = false;
             groupBox1.Text = "Disk Settings";
-            groupBox1.Enter += groupBox1_Enter;
             // 
             // numericUpDown1
             // 
@@ -276,7 +275,6 @@
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.CenterParent;
             Text = "New CryDisk";
-            Load += NewCryDisk_Load;
             ((System.ComponentModel.ISupportInitialize)size).EndInit();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
